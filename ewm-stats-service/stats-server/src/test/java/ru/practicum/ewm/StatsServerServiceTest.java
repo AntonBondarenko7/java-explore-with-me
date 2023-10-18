@@ -56,7 +56,7 @@ public class StatsServerServiceTest {
         final HitNotSavedException exception = assertThrows(HitNotSavedException.class,
                 () -> statsServerService.saveEndpointHit(endpointHitToSave));
 
-        assertThat("Информация о запросе не была сохранена: ",
+        assertThat("Информация о запросе не была сохранена: " + endpointHitToSave,
                 equalTo(exception.getMessage()));
         verify(statsServerRepository, times(1)).save(any(Hit.class));
     }
