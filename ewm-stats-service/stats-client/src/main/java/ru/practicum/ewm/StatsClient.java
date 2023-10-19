@@ -1,13 +1,11 @@
 package ru.practicum.ewm;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,7 +18,8 @@ public class StatsClient {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
 
-    private final Gson gson = getGson();
+//    private final Gson gson = getGson();
+    ObjectMapper objectMapper = new ObjectMapper();
 
     public StatsClient(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -35,7 +34,7 @@ public class StatsClient {
                 .build();
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return gson.fromJson(response.body(), EndpointHit.class);
+            return objectMapper.readValue(response.body(), EndpointHit.class);
         } catch (NullPointerException | IOException | InterruptedException e) {
             throw new ClientException(request.toString());
         }
@@ -55,18 +54,12 @@ public class StatsClient {
         String key = "";
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            Type userType = new TypeToken<List<ViewStats>>() {
-            }.getType();
-            return gson.fromJson(response.body(), userType);
+            TypeReference<List<ViewStats>> typeRef = new TypeReference<>() {};
+            return objectMapper.readValue(response.body(), typeRef);
         } catch (NullPointerException | IOException | InterruptedException e) {
             throw new ClientException(request.toString());
         }
 
-    }
-
-    private static Gson getGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        return gsonBuilder.create();
     }
 
 }
