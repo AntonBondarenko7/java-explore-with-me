@@ -2,6 +2,8 @@ package ru.practicum.ewm;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
 
@@ -13,15 +15,17 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Component
 public class StatsClient {
 
-    private final HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
     private final String serverUrl;
 
-//    private final Gson gson = getGson();
     ObjectMapper objectMapper = new ObjectMapper();
 
-    public StatsClient(String serverUrl) {
+    public StatsClient(@Value("${stats-server.url}") String serverUrl) {
         this.serverUrl = serverUrl;
     }
 
@@ -40,7 +44,7 @@ public class StatsClient {
         }
     }
 
-    public List<ViewStats> getAllStats(LocalDateTime start, LocalDateTime end,
+    public List<ViewStats> getAllStats(String start, String end,
                                        List<String> uris, Boolean unique) {
         URI uri = URI.create(serverUrl + "/stats?start={start}&end={end}&uris={uris}&unique={unique}");
         HttpRequest request = HttpRequest.newBuilder()
