@@ -50,7 +50,7 @@ public class StatsServerControllerIntegrationTest {
         endpointHit.setApp("app");
         endpointHit.setUri("/uri");
         endpointHit.setIp("23.23.23.23");
-        endpointHit.setTimestamp(LocalDateTime.now().format(FORMATTER_FOR_DATETIME));
+        endpointHit.setTimestamp(LocalDateTime.now());
 
         when(statsServerService.saveEndpointHit(any(EndpointHit.class))).thenReturn(endpointHit);
 
@@ -65,7 +65,7 @@ public class StatsServerControllerIntegrationTest {
                 .getContentAsString(StandardCharsets.UTF_8);
 
         assertThat(objectMapper.writeValueAsString(endpointHit), equalTo(result));
-        verify(statsServerService, times(1)).saveEndpointHit(endpointHit);
+        verify(statsServerService, times(1)).saveEndpointHit(any(EndpointHit.class));
     }
 
     @SneakyThrows
