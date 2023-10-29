@@ -36,8 +36,8 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.CREATED)
     @Validated
     public EventDto saveEvent(
-            @PathVariable Long userId, @Valid @RequestBody NewEventRequestDto NewEventRequestDto) {
-        EventDto eventDto = eventService.saveEvent(userId, NewEventRequestDto);
+            @PathVariable Long userId, @Valid @RequestBody NewEventRequestDto newEventRequestDto) {
+        EventDto eventDto = eventService.saveEvent(userId, newEventRequestDto);
         log.info("Добавлено новое событие: {}", eventDto);
         return eventDto;
     }
@@ -81,5 +81,4 @@ public class EventPrivateController {
                 userId, eventId, eventRequestStatusUpdateResults);
         return eventRequestStatusUpdateResults;
     }
-    
 }

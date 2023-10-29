@@ -80,7 +80,6 @@ public class EventService {
         return eventDtos;
     }
 
-    
     public EventDto updateEventByAdmin(Long eventId, UpdateEventAdminRequestDto updateEventAdminRequestDto) {
         Event event = findEventById(eventId);
         if (updateEventAdminRequestDto.getAnnotation() != null) {
@@ -156,7 +155,6 @@ public class EventService {
                 eventRepository.findByInitiatorId(userId, page));
     }
 
-    
     public EventDto saveEvent(Long userId, NewEventRequestDto newEventRequestDto) {
         User user = userService.findUserById(userId);
         Category category = categoryService.findCategoryById(newEventRequestDto.getCategory());
@@ -176,9 +174,9 @@ public class EventService {
 
         try {
             event = eventRepository.save(event);
-            EventDto EventDto = EventMapper.INSTANCE.toEventDto(event);
-            EventDto.setViews(0L);
-            return EventDto;
+            EventDto eventDto = EventMapper.INSTANCE.toEventDto(event);
+            eventDto.setViews(0L);
+            return eventDto;
         } catch (DataIntegrityViolationException e) {
             throw new NotSavedException("Событие не было создано: " + newEventRequestDto);
         }
@@ -203,7 +201,6 @@ public class EventService {
         return eventDto;
     }
 
-    
     public EventDto updateEvent(Long userId, Long eventId, UpdateEventUserRequestDto updateEventUserRequest) {
         userService.findUserById(userId);
         Event event = findEventById(eventId);
@@ -279,7 +276,6 @@ public class EventService {
                 requestRepository.findAllByEventId(eventId));
     }
 
-    
     public EventRequestStatusUpdateResponseDto updateAllRequestsOfEventByUser(
             Long userId, Long eventId, EventRequestStatusUpdateRequestDto eventRequestStatusUpdateRequest) {
         userService.findUserById(userId);
@@ -343,7 +339,6 @@ public class EventService {
         return result;
     }
 
-    
     public List<EventShortDto> getAllEvents(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, SortSearch sort, Integer from, Integer size, HttpServletRequest request) {
@@ -398,7 +393,6 @@ public class EventService {
         return eventShortDtos;
     }
 
-    
     public EventDto getPublicEventById(Long eventId, HttpServletRequest request) {
         Event event = findEventById(eventId);
         if (!event.getState().equals(StateEvent.PUBLISHED)) {
@@ -417,12 +411,12 @@ public class EventService {
                 LocalDateTime.now().minusYears(100).format(FORMATTER_FOR_DATETIME),
                 LocalDateTime.now().plusYears(100).format(FORMATTER_FOR_DATETIME), uris, true);
 
-        EventDto EventDto = EventMapper.INSTANCE.toEventDto(event);
-        EventDto.setConfirmedRequests(requestRepository
+        EventDto eventDto = EventMapper.INSTANCE.toEventDto(event);
+        eventDto.setConfirmedRequests(requestRepository
                 .countByEventIdAndStatus(event.getId(), StateRequest.CONFIRMED));
-        EventDto.setViews(viewStats.isEmpty() ? 0L : viewStats.get(0).getHits());
+        eventDto.setViews(viewStats.isEmpty() ? 0L : viewStats.get(0).getHits());
 
-        return EventDto;
+        return eventDto;
     }
 
     public Map<Long, Long> returnMapViewStats(List<Event> events, LocalDateTime rangeStart, LocalDateTime rangeEnd) {
@@ -457,5 +451,4 @@ public class EventService {
                     " не является инициатором события с id = " + event.getId());
         }
     }
-    
 }
