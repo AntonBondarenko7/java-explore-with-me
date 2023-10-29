@@ -45,11 +45,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handleNotSave(final NotSavedException e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleNotSaved(final ValidationException e) {
         ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.CONFLICT);
-        apiError.setReason("Integrity constraint has been violated.");
+        apiError.setStatus(HttpStatus.BAD_REQUEST);
+        apiError.setReason("Incorrectly made request.");
         apiError.setMessage(e.getMessage());
         apiError.setTimestamp(LocalDateTime.now());
         apiError.setErrors(Arrays.stream(e.getStackTrace()).map(x -> x.toString()).collect(Collectors.toList()));
@@ -59,11 +59,25 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotSave(final NotFoundException e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMissingRequestParameter(final MissingServletRequestParameterException e) {
         ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.NOT_FOUND);
-        apiError.setReason("The required object was not found.");
+        apiError.setStatus(HttpStatus.BAD_REQUEST);
+        apiError.setReason("Required request parameter is not present.");
+        apiError.setMessage(e.getMessage());
+        apiError.setTimestamp(LocalDateTime.now());
+        apiError.setErrors(Arrays.stream(e.getStackTrace()).map(x -> x.toString()).collect(Collectors.toList()));
+
+        log.warn(apiError.toString());
+        return apiError;
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleNotSave(final NotSavedException e) {
+        ApiError apiError = new ApiError();
+        apiError.setStatus(HttpStatus.CONFLICT);
+        apiError.setReason("Integrity constraint has been violated.");
         apiError.setMessage(e.getMessage());
         apiError.setTimestamp(LocalDateTime.now());
         apiError.setErrors(Arrays.stream(e.getStackTrace()).map(x -> x.toString()).collect(Collectors.toList()));
@@ -87,25 +101,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleNotSaved(final ValidationException e) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleNotSave(final NotFoundException e) {
         ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.BAD_REQUEST);
-        apiError.setReason("Incorrectly made request.");
-        apiError.setMessage(e.getMessage());
-        apiError.setTimestamp(LocalDateTime.now());
-        apiError.setErrors(Arrays.stream(e.getStackTrace()).map(x -> x.toString()).collect(Collectors.toList()));
-
-        log.warn(apiError.toString());
-        return apiError;
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleMissingRequestParameter(final MissingServletRequestParameterException e) {
-        ApiError apiError = new ApiError();
-        apiError.setStatus(HttpStatus.BAD_REQUEST);
-        apiError.setReason("Required request parameter is not present.");
+        apiError.setStatus(HttpStatus.NOT_FOUND);
+        apiError.setReason("The required object was not found.");
         apiError.setMessage(e.getMessage());
         apiError.setTimestamp(LocalDateTime.now());
         apiError.setErrors(Arrays.stream(e.getStackTrace()).map(x -> x.toString()).collect(Collectors.toList()));
