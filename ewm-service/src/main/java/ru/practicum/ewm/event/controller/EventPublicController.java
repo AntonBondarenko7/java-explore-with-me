@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,7 +37,7 @@ public class EventPublicController {
             @RequestParam(defaultValue = "VIEWS") SortSearch sort,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size,
-            HttpServletRequest request) {
+            HttpServletRequest request) throws JsonProcessingException {
 
         log.info("Получен список событий с возможностью фильтрации, text = {}, categories = {}, paid = {}, " +
                         "rangeStart = {}, rangeEnd = {}, onlyAvailable = {}, sort = {}, from = {}, size = {}.",
@@ -46,7 +47,7 @@ public class EventPublicController {
     }
 
     @GetMapping("/{id}")
-    public EventDto getEventById(@PathVariable Long id, HttpServletRequest request) {
+    public EventDto getEventById(@PathVariable Long id, HttpServletRequest request) throws JsonProcessingException {
         EventDto eventDto = eventService.getPublicEventById(id, request);
         log.info("Получено событие, добавленное текущим пользователем, с id = {}: {}.",
                 id, eventDto);

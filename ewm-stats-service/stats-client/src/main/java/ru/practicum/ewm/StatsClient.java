@@ -1,9 +1,11 @@
 package ru.practicum.ewm;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
 
@@ -28,14 +30,18 @@ public class StatsClient {
         this.serverUrl = serverUrl;
     }
 
-    public EndpointHit saveHit(EndpointHit endpointHitDto) {
+    public EndpointHit saveHit(EndpointHit endpointHitDto) throws JsonProcessingException {
         URI uri = URI.create(serverUrl + "/hit");
-        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(endpointHitDto.toString());
+//        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(endpointHitDto.toString());
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers
+                .ofString(objectMapper.writeValueAsString(endpointHitDto));
+
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(uri)
                 .POST(body)
                 .build();
+
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return objectMapper.readValue(response.body(), EndpointHit.class);
@@ -46,16 +52,21 @@ public class StatsClient {
 
     public List<ViewStats> getAllStats(String start, String end,
                                        List<String> uris, Boolean unique) {
-        URI uri = URI.create(serverUrl + "/stats?start={start}&end={end}&uris={uris}&unique={unique}");
+        URI uri = UriComponentsBuilder.fromUriString(serverUrl)
+                .path("/stats")
+                .queryParam("start", start)
+                .queryParam("end", end)
+                .queryParam("uris", uris)
+                .queryParam("unique", unique)
+                .encode()
+                .build()
+                .toUri();
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
-                .header("start", "start")
-                .header("end", "end")
-                .header("uris", "uris")
-                .header("unique", "unique")
                 .GET()
                 .build();
-        String key = "";
+
         try {
             final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             TypeReference<List<ViewStats>> typeRef = new TypeReference<>() {};
