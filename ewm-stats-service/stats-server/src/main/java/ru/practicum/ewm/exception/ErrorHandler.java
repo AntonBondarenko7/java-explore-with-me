@@ -20,7 +20,8 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler({MissingServletRequestParameterException.class, IllegalArgumentException.class})
+    @ExceptionHandler({MissingServletRequestParameterException.class, IllegalArgumentException.class,
+            ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotFoundException(final ValidationException e) {
         log.warn(e.getMessage());
