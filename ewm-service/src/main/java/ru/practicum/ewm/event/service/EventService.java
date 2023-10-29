@@ -1,6 +1,5 @@
 package ru.practicum.ewm.event.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -342,7 +341,7 @@ public class EventService {
 
     public List<EventShortDto> getAllEvents(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-            Boolean onlyAvailable, SortSearch sort, Integer from, Integer size, HttpServletRequest request) throws JsonProcessingException {
+            Boolean onlyAvailable, SortSearch sort, Integer from, Integer size, HttpServletRequest request) {
         Pageable page = PageRequest.of(from, size, Sort.by(Sort.Direction.ASC, "eventDate"));
 
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
@@ -394,7 +393,7 @@ public class EventService {
         return eventShortDtos;
     }
 
-    public EventDto getPublicEventById(Long eventId, HttpServletRequest request) throws JsonProcessingException {
+    public EventDto getPublicEventById(Long eventId, HttpServletRequest request) {
         Event event = findEventById(eventId);
         if (!event.getState().equals(StateEvent.PUBLISHED)) {
             throw new NotFoundException("Событие с id = " + eventId + " должно быть опубликовано.");

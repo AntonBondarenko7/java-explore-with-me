@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class CompilationService {
 
