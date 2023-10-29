@@ -32,6 +32,7 @@ public class StatsClient {
         URI uri = URI.create(serverUrl + "/hit");
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(endpointHitDto.toString());
         HttpRequest request = HttpRequest.newBuilder()
+                .header("Content-Type", "application/json")
                 .uri(uri)
                 .POST(body)
                 .build();
