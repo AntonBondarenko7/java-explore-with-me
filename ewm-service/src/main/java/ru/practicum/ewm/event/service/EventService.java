@@ -434,11 +434,6 @@ public class EventService {
         return views;
     }
 
-    public Event findEventById(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() ->
-                new NotFoundException("Событие с идентификатором " + eventId + " не найдено."));
-    }
-    
     @Transactional
     public Location findLocation(LocationDto locationDto) {
         Location location = locationRepository.findByLatAndLon(locationDto.getLat(), locationDto.getLon());
@@ -450,5 +445,10 @@ public class EventService {
             throw new NotFoundException("Пользователь с id = " + userId +
                     " не является инициатором события с id = " + event.getId());
         }
+    }
+
+    public Event findEventById(Long eventId) {
+        return eventRepository.findById(eventId).orElseThrow(() ->
+                new NotFoundException("Событие с идентификатором " + eventId + " не найдено."));
     }
 }
