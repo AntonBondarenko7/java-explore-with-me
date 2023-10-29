@@ -1,0 +1,13 @@
+package ru.practicum.ewm.user;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+@DataJpaTest
+class UserRepositoryTest {
+
+    @Test
+    void findAllById() {
+    }
+
+}

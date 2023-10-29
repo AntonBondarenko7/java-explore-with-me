@@ -94,7 +94,7 @@ public class CompilationService {
         return CompilationMapper.INSTANCE.toCompilationDto(findCompilationById(compId));
     }
 
-    private Compilation findCompilationById(Long compId) {
+    public Compilation findCompilationById(Long compId) {
         return compilationRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException("Подборка событий с идентификатором " + compId + " не найдена."));
     }
