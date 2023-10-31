@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
 import ru.practicum.ewm.exception.HitNotSavedException;
+import ru.practicum.ewm.exception.ValidationException;
 import ru.practicum.ewm.mapper.StatsServerMapper;
 import ru.practicum.ewm.model.Hit;
 import ru.practicum.ewm.repository.StatsServerRepository;
@@ -32,6 +33,10 @@ public class StatsServerService {
 
     @Transactional(readOnly = true)
     public List<ViewStats> getAllStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (end.isBefore(start)) {
+            throw new ValidationException("Дата и время конца должны быть после даты и времени начала.");
+        }
+
         if (unique) {
             if (uris == null) {
                 return statsServerRepository.getAllUniqueStats(start, end);
