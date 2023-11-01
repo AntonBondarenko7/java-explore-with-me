@@ -11,6 +11,8 @@ import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.service.CategoryService;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
+import ru.practicum.ewm.event.mapper.CommentMapper;
+import ru.practicum.ewm.event.repository.CommentRepository;
 import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.event.repository.LocationRepository;
 import ru.practicum.ewm.event.dto.*;
@@ -50,6 +52,7 @@ public class EventService {
     private final UserService userService;
     private final CategoryService categoryService;
     private final LocationRepository locationRepository;
+    private final CommentRepository commentRepository;
     private final Stats stats;
 
     @Transactional(readOnly = true)
@@ -451,4 +454,21 @@ public class EventService {
         return eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с идентификатором " + eventId + " не найдено."));
     }
+
+    public CommentDto saveComment(Long userId, Long eventId, NewCommentRequestDto newCommentRequestDto) {
+        User author = userService.findUserById(userId);
+        Event event = findEventById(eventId);
+
+        Comment comment = CommentMapper.INSTANCE.toCommentFromNewDto(newCommentRequestDto, event, author);
+        comment.setCreatedOn(LocalDateTime.now());
+        comment.setStatus(CommentStatus.PENDING_MODERATION);
+
+        try {
+            return CommentMapper.INSTANCE.toCommentDto(commentRepository.save(comment));
+        } catch (DataIntegrityViolationException e) {
+            throw new NotSavedException("Не удалось сохранить комментарий");
+        }
+
+    }
+
 }
