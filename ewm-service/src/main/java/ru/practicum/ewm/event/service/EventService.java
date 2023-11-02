@@ -454,7 +454,8 @@ public class EventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с идентификатором " + eventId + " не найдено."));
 
-        event.setComments(commentRepository.findAllByEventIdOrderByCreatedOnDesc(eventId));
+        event.setComments(
+                commentRepository.findAllByEventIdAndStatusOrderByCreatedOnDesc(eventId));
 
         return event;
     }
@@ -537,6 +538,12 @@ public class EventService {
 
         return commentRepository.deleteByIdWithReturnedLines(commentId) >=0;
 
+    }
+
+    public List<CommentDto> getCommentsToModerate() {
+        List<Comment> comments = commentRepository.findAllByStatusOrderByCreatedOnAsc(CommentStatus.PENDING_MODERATION);
+
+        return CommentMapper.INSTANCE.convertCommentListToCommentDTOList(comments);
     }
 
 }

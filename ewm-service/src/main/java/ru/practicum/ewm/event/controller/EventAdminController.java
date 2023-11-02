@@ -62,4 +62,11 @@ public class EventAdminController {
         log.info("Обновлен комментарий админом, с id = {}: {}.", commentId, commentDto);
         return commentDto;
     }
+
+    @GetMapping("/comments")
+    public List<CommentDto> getCommentsToModerate() {
+        log.info("Получен запрос на получение комментариев, требующих модерации.");
+        return eventService.getCommentsToModerate();
+    }
+
 }

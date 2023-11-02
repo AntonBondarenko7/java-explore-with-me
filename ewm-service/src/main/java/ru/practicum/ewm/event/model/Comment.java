@@ -34,6 +34,7 @@ public class Comment {
 
     private LocalDateTime editedOn;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CommentStatus status;
 
