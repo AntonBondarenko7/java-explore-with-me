@@ -18,15 +18,15 @@ public interface CommentMapper {
 
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-    @Mapping(target = "authorName", source = "comment.author.name")
+    @Mapping(target = "authorId", source = "comment.authorId")
     @Mapping(target = "createdOn", source = "comment.createdOn", dateFormat = PATTERN_FOR_DATETIME)
     @Mapping(target = "editedOn", source = "comment.editedOn", dateFormat = PATTERN_FOR_DATETIME)
     CommentDto toCommentDto(Comment comment);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "event", source = "event")
-    @Mapping(target = "author", source = "author")
-    Comment toCommentFromNewDto(NewCommentRequestDto commentDto, Event event, User author);
+    @Mapping(target = "eventId", source = "eventId")
+    @Mapping(target = "authorId", source = "authorId")
+    Comment toCommentFromNewDto(NewCommentRequestDto commentDto,Long eventId, Long authorId);
 
 
     List<CommentDto> convertCommentListToCommentDTOList(List<Comment> list);

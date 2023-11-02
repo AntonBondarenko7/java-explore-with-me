@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
-import ru.practicum.ewm.compilation.service.CompilationService;
 import ru.practicum.ewm.compilation.dto.NewCompilationRequestDto;
 import ru.practicum.ewm.compilation.dto.UpdateCompilationRequestDto;
+import ru.practicum.ewm.compilation.service.CompilationService;
 
 import javax.validation.Valid;
 

@@ -9,11 +9,11 @@ import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
-import ru.practicum.ewm.request.model.ParticipationRequest;
-import ru.practicum.ewm.request.repository.RequestRepository;
-import ru.practicum.ewm.request.model.StateRequest;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.request.mapper.ParticipationRequestMapper;
+import ru.practicum.ewm.request.model.ParticipationRequest;
+import ru.practicum.ewm.request.model.StateRequest;
+import ru.practicum.ewm.request.repository.RequestRepository;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.service.UserService;
 

@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm.event.dto.CommentDto;
 import ru.practicum.ewm.event.dto.EventDto;
+import ru.practicum.ewm.event.dto.UpdateCommentDto;
 import ru.practicum.ewm.event.dto.UpdateEventAdminRequestDto;
 import ru.practicum.ewm.event.model.StateEvent;
 import ru.practicum.ewm.event.service.EventService;
@@ -49,5 +51,15 @@ public class EventAdminController {
         EventDto eventDto = eventService.updateEventByAdmin(eventId, updateEventAdminRequest);
         log.info("Обновлено событие админом, с id = {}: {}.", eventId, eventDto);
         return eventDto;
+    }
+
+    @PatchMapping("/comments/{commentId}")
+    @Validated
+    public CommentDto updateCommentByAdmin(
+            @PathVariable Long commentId,
+            @Valid @RequestBody UpdateCommentDto updateCommentDto) {
+        CommentDto commentDto = eventService.updateCommentByAdmin(commentId, updateCommentDto);
+        log.info("Обновлен комментарий админом, с id = {}: {}.", commentId, commentDto);
+        return commentDto;
     }
 }

@@ -43,7 +43,6 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{eventId}")
-
     public EventDto getEventById(
             @PathVariable Long userId, @PathVariable Long eventId) {
         EventDto eventDto = eventService.getEventById(userId, eventId);
@@ -81,4 +80,35 @@ public class EventPrivateController {
                 userId, eventId, eventRequestStatusUpdateResults);
         return eventRequestStatusUpdateResults;
     }
+
+    @PostMapping("/{eventId}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Validated
+    public CommentDto saveComment(
+            @PathVariable Long userId, @PathVariable Long eventId,
+            @Valid @RequestBody NewCommentRequestDto newCommentRequestDto) {
+        CommentDto commentDto = eventService.saveComment(userId, eventId, newCommentRequestDto);
+        log.info("Создан новый комментарий: {}", commentDto);
+        return commentDto;
+    }
+
+    @PatchMapping("/comments/{commentId}")
+    @Validated
+    public CommentDto updateCommentByUser(
+            @PathVariable Long userId,
+            @PathVariable Long commentId,
+            @Valid @RequestBody UpdateCommentDto updateCommentDto) {
+        CommentDto commentDto = eventService.updateCommentByUser(userId, commentId, updateCommentDto);
+        log.info("Пользователем с id = {} обновлен комментарий с id = {}: {}.", commentId, userId, commentDto);
+        return commentDto;
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public Boolean deleteCommentById(
+            @PathVariable Long userId,
+            @PathVariable Long commentId) {
+        log.info("Пользователем с id = {} удален комментарий с id = {}", userId, commentId);
+        return eventService.deleteCommentById(commentId, userId);
+    }
+
 }

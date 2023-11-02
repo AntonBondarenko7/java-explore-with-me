@@ -87,11 +87,11 @@ CREATE TABLE IF NOT EXISTS comments (
     author_id BIGINT NOT NULL,
     text VARCHAR(256) NOT NULL,
     created_on TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    status VARCHAR(32) NOT NULL
+    status VARCHAR(32) NOT NULL,
     edited_on TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_comments PRIMARY KEY (id),
     CONSTRAINT fk_comments_to_events FOREIGN KEY(event_id)
         REFERENCES events(id),
     CONSTRAINT fk_comments_to_users FOREIGN KEY(author_id)
-        REFERENCES users(id),
-)
+        REFERENCES users(id)
+);

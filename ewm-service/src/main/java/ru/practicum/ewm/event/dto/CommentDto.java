@@ -13,7 +13,7 @@ public class CommentDto {
 
     private Long id;
 
-    private String authorName;
+    private Long authorId;
 
     private String text;
 

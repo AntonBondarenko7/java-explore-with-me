@@ -11,14 +11,14 @@ import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.service.CategoryService;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.ViewStats;
-import ru.practicum.ewm.event.mapper.CommentMapper;
-import ru.practicum.ewm.event.repository.CommentRepository;
-import ru.practicum.ewm.event.repository.EventRepository;
-import ru.practicum.ewm.event.repository.LocationRepository;
 import ru.practicum.ewm.event.dto.*;
+import ru.practicum.ewm.event.mapper.CommentMapper;
 import ru.practicum.ewm.event.mapper.EventMapper;
 import ru.practicum.ewm.event.mapper.LocationMapper;
 import ru.practicum.ewm.event.model.*;
+import ru.practicum.ewm.event.repository.CommentRepository;
+import ru.practicum.ewm.event.repository.EventRepository;
+import ru.practicum.ewm.event.repository.LocationRepository;
 import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.exception.NotSavedException;
@@ -451,15 +451,19 @@ public class EventService {
     }
 
     public Event findEventById(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() ->
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException("Событие с идентификатором " + eventId + " не найдено."));
+
+        event.setComments(commentRepository.findAllByEventIdOrderByCreatedOnDesc(eventId));
+
+        return event;
     }
 
     public CommentDto saveComment(Long userId, Long eventId, NewCommentRequestDto newCommentRequestDto) {
-        User author = userService.findUserById(userId);
-        Event event = findEventById(eventId);
+        userService.findUserById(userId);
+        findEventById(eventId);
 
-        Comment comment = CommentMapper.INSTANCE.toCommentFromNewDto(newCommentRequestDto, event, author);
+        Comment comment = CommentMapper.INSTANCE.toCommentFromNewDto(newCommentRequestDto, eventId, userId);
         comment.setCreatedOn(LocalDateTime.now());
         comment.setStatus(CommentStatus.PENDING_MODERATION);
 
@@ -468,6 +472,70 @@ public class EventService {
         } catch (DataIntegrityViolationException e) {
             throw new NotSavedException("Не удалось сохранить комментарий");
         }
+
+    }
+
+    public CommentDto updateCommentByAdmin(Long commentId, UpdateCommentDto updateCommentDto) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new NotFoundException("Комментарий с идентификатором " + commentId + " не найден."));
+
+        if (updateCommentDto.getText() != null) {
+            comment.setText(updateCommentDto.getText());
+        }
+
+        if (comment.getStatus().equals(CommentStatus.PENDING_MODERATION)) {
+            comment.setStatus(CommentStatus.MODERATED);
+        }
+
+        try {
+            return CommentMapper.INSTANCE.toCommentDto(commentRepository.save(comment));
+        } catch (DataIntegrityViolationException e) {
+            throw new NotSavedException("Не удалось обновить комментарий");
+        }
+
+    }
+
+    public CommentDto updateCommentByUser(Long userId, Long commentId, UpdateCommentDto updateCommentDto) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new NotFoundException("Комментарий с идентификатором " + commentId + " не найден."));
+
+        userService.findUserById(userId);
+
+        if (!comment.getAuthorId().equals(userId)) {
+            throw new ValidationException("Пользователь с идентификатором " + userId +
+                    " не является автором комментария.");
+        }
+
+        if (updateCommentDto.getText() != null) {
+            comment.setText(updateCommentDto.getText());
+        }
+
+        if (comment.getStatus().equals(CommentStatus.MODERATED)) {
+            comment.setStatus(CommentStatus.PENDING_MODERATION);
+        }
+
+        comment.setEditedOn(LocalDateTime.now());
+
+        try {
+            return CommentMapper.INSTANCE.toCommentDto(commentRepository.save(comment));
+        } catch (DataIntegrityViolationException e) {
+            throw new NotSavedException("Не удалось обновить комментарий");
+        }
+
+    }
+
+    public Boolean deleteCommentById(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new NotFoundException("Комментарий с идентификатором " + commentId + " не найден."));
+
+        userService.findUserById(userId);
+
+        if (!comment.getAuthorId().equals(userId)) {
+            throw new ValidationException("Пользователь с идентификатором " + userId +
+                    " не является автором комментария.");
+        }
+
+        return commentRepository.deleteByIdWithReturnedLines(commentId) >=0;
 
     }
 
