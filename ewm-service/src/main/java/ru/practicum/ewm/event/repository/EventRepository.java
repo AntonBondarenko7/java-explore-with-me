@@ -47,4 +47,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                              @Param("rangeEnd") LocalDateTime rangeEnd,
                              @Param("onlyAvailable") Boolean onlyAvailable,
                              Pageable page);
+
 }

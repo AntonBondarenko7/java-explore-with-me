@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.event.mapper.EventMapper;
-import ru.practicum.ewm.request.model.ParticipationRequest;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
+import ru.practicum.ewm.request.model.ParticipationRequest;
 import ru.practicum.ewm.user.mapper.UserMapper;
 
 import java.util.List;

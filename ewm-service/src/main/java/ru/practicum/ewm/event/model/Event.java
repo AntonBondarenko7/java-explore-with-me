@@ -8,6 +8,7 @@ import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "events")
@@ -61,5 +62,8 @@ public class Event {
 
     @Column(nullable = false)
     private String title;
+
+    @OneToMany(mappedBy = "eventId", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
 }

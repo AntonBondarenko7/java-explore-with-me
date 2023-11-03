@@ -7,6 +7,7 @@ import ru.practicum.ewm.event.model.StateEvent;
 import ru.practicum.ewm.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static ru.practicum.ewm.utils.Constants.PATTERN_FOR_DATETIME;
 
@@ -47,5 +48,7 @@ public class EventDto {
     private String title;
 
     private Long views;
+
+    private List<CommentDto> comments;
 
 }

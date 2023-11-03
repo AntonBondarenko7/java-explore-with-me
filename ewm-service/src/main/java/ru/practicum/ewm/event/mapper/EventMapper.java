@@ -30,9 +30,11 @@ public interface EventMapper {
     @Mapping(target = "createdOn", source = "event.createdOn", dateFormat = PATTERN_FOR_DATETIME)
     @Mapping(target = "eventDate", source = "event.eventDate", dateFormat = PATTERN_FOR_DATETIME)
     @Mapping(target = "publishedOn", source = "event.publishedOn", dateFormat = PATTERN_FOR_DATETIME)
+    @Mapping(target = "comments", source = "event.comments")
     EventDto toEventDto(Event event);
 
     @Mapping(target = "eventDate", source = "event.eventDate", dateFormat = PATTERN_FOR_DATETIME)
+    @Mapping(target = "comments", source = "event.comments")
     EventShortDto toEventShortDto(Event event);
 
     List<EventDto> convertEventListToEventDtoList(List<Event> list);

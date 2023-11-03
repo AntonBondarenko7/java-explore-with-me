@@ -1,13 +1,5 @@
 package ru.practicum.ewm.compilation;
 
-import ru.practicum.ewm.compilation.dto.CompilationDto;
-import ru.practicum.ewm.compilation.mapper.CompilationMapper;
-import ru.practicum.ewm.compilation.model.Compilation;
-import ru.practicum.ewm.compilation.repository.CompilationRepository;
-import ru.practicum.ewm.compilation.service.CompilationService;
-
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import ru.practicum.ewm.compilation.dto.CompilationDto;
+import ru.practicum.ewm.compilation.mapper.CompilationMapper;
+import ru.practicum.ewm.compilation.model.Compilation;
+import ru.practicum.ewm.compilation.repository.CompilationRepository;
+import ru.practicum.ewm.compilation.service.CompilationService;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
