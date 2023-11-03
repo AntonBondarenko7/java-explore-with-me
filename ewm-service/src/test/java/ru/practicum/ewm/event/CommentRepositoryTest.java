@@ -7,12 +7,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 public class CommentRepositoryTest {
 
     @Test
-    void testFindAllByEventIdAndStatusOrderByCreatedOnDesc() {}
+    void testFindAllByEventIdAndStatusOrderByCreatedOnDesc() {
+    }
 
     @Test
-    void testFindAllByStatusOrderByCreatedOnAsc() {}
+    void testFindAllByStatusOrderByCreatedOnAsc() {
+    }
 
     @Test
-    void testDeleteByIdWithReturnedLines() {}
+    void testDeleteByIdWithReturnedLines() {
+    }
 
 }

@@ -6,8 +6,6 @@ import org.mapstruct.factory.Mappers;
 import ru.practicum.ewm.event.dto.CommentDto;
 import ru.practicum.ewm.event.dto.NewCommentRequestDto;
 import ru.practicum.ewm.event.model.Comment;
-import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.user.model.User;
 
 import java.util.List;
 
