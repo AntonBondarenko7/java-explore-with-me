@@ -215,6 +215,69 @@
       "response": []
     },
     {
+      "name": "get comments to moderate by admin one comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Response status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Verify that the response is an array\", function () {",
+              "  pm.expect(pm.response.json()).to.be.an('array');",
+              "});",
+              "",
+              "",
+              "pm.test(\"Check id and authorId are non-negative integers\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    responseData.forEach(function(comment) {",
+              "        pm.expect(comment.id).to.be.a('number').and.to.be.at.least(0, \"id should be a non-negative integer\");",
+              "        pm.expect(comment.authorId).to.be.a('number').and.to.be.at.least(0, \"authorId should be a non-negative integer\");",
+              "    });",
+              "});",
+              "",
+              "",
+              "pm.test(\"Verify that the 'text' is a non-empty string\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.be.an('array');",
+              "    ",
+              "    responseData.forEach(function(comment) {",
+              "        pm.expect(comment.text).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+              "    });",
+              "});",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/admin/events/comments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "admin",
+            "events",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "update comment by admin",
       "event": [
         {
@@ -509,8 +572,8 @@
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Response status code is 404\", function () {",
-              "    pm.expect(pm.response.code).to.equal(404);",
+              "pm.test(\"Response status code is 400\", function () {",
+              "    pm.expect(pm.response.code).to.equal(400);",
               "});",
               "",
               "",
@@ -610,6 +673,11 @@
               "  pm.expect(responseData.category).to.be.an('object');",
               "  pm.expect(responseData.category.id).to.exist.and.to.be.a('number');",
               "  pm.expect(responseData.category.name).to.exist.and.to.be.a('string');",
+              "});pm.test(\"The comments array should be empty\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData.comments).to.be.an('array');",
+              "    pm.expect(responseData.comments).to.have.lengthOf(0);",
               "});"
             ],
             "type": "text/javascript"
@@ -699,6 +767,73 @@
       "response": []
     },
     {
+      "name": "get comments to moderate by admin no comments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "pm.test(\"Response status code is 200\", function () {",
+              "  pm.expect(pm.response.code).to.equal(200);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "  pm.expect(pm.response.json()).to.be.an('array');",
+              "});",
+              "",
+              "",
+              "pm.test(\"Response array is empty\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.be.an('array').that.is.empty;",
+              "});",
+              "",
+              "",
+              "pm.test(\"Response time is less than 200ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});",
+              "",
+              "",
+              "pm.test(\"Verify that the response includes the required fields for each comment\", function () {",
+              "    const responseData = pm.response.json();",
+              "",
+              "    pm.expect(responseData).to.be.an('array');",
+              "    responseData.forEach(function(comment) {",
+              "        pm.expect(comment).to.have.property('commentID');",
+              "        pm.expect(comment).to.have.property('author');",
+              "        pm.expect(comment).to.have.property('content');",
+              "        pm.expect(comment).to.have.property('timestamp');",
+              "    });",
+              "});",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/admin/events/comments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "admin",
+            "events",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "get event with comments",
       "event": [
         {
@@ -752,6 +887,10 @@
               "  const responseData = pm.response.json();",
               "  ",
               "  pm.expect(responseData.eventDate).to.exist;",
+              "});pm.test(\"Verify that the comments array exists and contains one comment\", function () {",
+              "    const responseData = pm.response.json();",
+              "  ",
+              "    pm.expect(responseData.comments).to.exist.and.to.be.an('array').and.to.have.lengthOf(1, \"Comments array should have one comment\");",
               "});"
             ],
             "type": "text/javascript"
@@ -831,6 +970,71 @@
             "events",
             "comments",
             "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get event no comments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Response status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "",
+              "pm.test(\"The id field should be a non-negative integer\", function () {",
+              "  const responseData = pm.response.json();",
+              "",
+              "  pm.expect(responseData.id).to.be.a('number');",
+              "  pm.expect(responseData.id).to.be.at.least(0);",
+              "});",
+              "",
+              "",
+              "pm.test(\"The annotation field should be a string\", function () {",
+              "    const responseData = pm.response.json();",
+              "    ",
+              "    pm.expect(responseData).to.be.an('object');",
+              "    pm.expect(responseData.annotation).to.be.a('string');",
+              "});",
+              "",
+              "",
+              "pm.test(\"The category field is an object with id and name fields\", function () {",
+              "  const responseData = pm.response.json();",
+              "  ",
+              "  pm.expect(responseData.category).to.be.an('object');",
+              "  pm.expect(responseData.category.id).to.exist.and.to.be.a('number');",
+              "  pm.expect(responseData.category.name).to.exist.and.to.be.a('string');",
+              "});pm.test(\"The comments field should be an empty array\", function () {",
+              "  const responseData = pm.response.json();",
+              "  ",
+              "  pm.expect(responseData.comments).to.be.an('array');",
+              "  pm.expect(responseData.comments.length).to.equal(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users/3/events/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users",
+            "3",
+            "events",
+            "2"
           ]
         }
       },
