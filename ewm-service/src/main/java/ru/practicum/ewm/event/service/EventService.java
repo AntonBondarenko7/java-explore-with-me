@@ -535,7 +535,7 @@ public class EventService {
             throw new ValidationException("Пользователь с идентификатором " + userId +
                     " не является автором комментария.");
         }
-        return commentRepository.deleteByIdWithReturnedLines(commentId)>=0;
+        return commentRepository.deleteByIdWithReturnedLines(commentId) >= 0;
     }
 
     public List<CommentDto> getCommentsToModerate() {
